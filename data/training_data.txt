@@ -1,0 +1,4 @@
+The lone wolf operates entirely offline on local hardware components.
+Neural networks process structural text sequences by converting characters into vectors.
+Matrix multiplication scales attention weights across multi-dimensional spaces.
+Transformers use RMSNorm and SwiGLU activation functions to stabilize hidden layers.
