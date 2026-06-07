@@ -10,17 +10,24 @@ from src.model import LoneWolfLLM
 def main():
     # 1. Initialize Configuration
     config = LoneWolfConfig()
+
     print(f"Loading Lone Wolf Engine on: {config.device}")
 
     # 2. Initialize Tokenizer & Process Raw File Data
     tokenizer = ByteTokenizer()
     
+
+    # 3 taking data to train the model from file 'hello'
     with open("data/training_data.txt", "r", encoding="utf-8") as f:
         raw_text = f.read()
     
-    # Encode text into vector integers
+
+    # 4 Encode text into vector integers [104, 101, 108, 108, 111...]
     encoded_raw = tokenizer.encode(raw_text)
+
+    # 5 tensor([104, 101, 108, 108, 111...])
     data_tensor = torch.tensor(encoded_raw, dtype=torch.long)
+
     
     # 3. Initialize Dataset Loader (Splits data into train/validation)
     dataset = TextDataset(data_tensor, config.block_size)

@@ -1,7 +1,7 @@
 import torch
 
 class LoneWolfConfig:
-    vocab_size = 256       # Raw byte-level vocabulary
+    vocab_size = 256       # how many token types exist using ascii id 104
     block_size = 256       # Max context length (tokens looked at simultaneously)
     n_embd = 128           # Dimensionality of the vectors
     n_head = 4             # Parallel attention heads
