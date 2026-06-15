@@ -38,9 +38,10 @@ def main():
     model = LoneWolfLLM(config).to(config.device)
     model.load_state_dict(torch.load("lone_wolf_model.pt", map_location=config.device))
     
-    prompt = "The lone wolf"
-    print(f"Prompt Input: '{prompt}'\n")
-    
+    prompt = input("Prompt Input: ")
+    print()
+  
+
     output = generate_text(model, tokenizer, config, prompt, max_new_tokens=60)
     print("--- Generated Output ---")
     print(output)
