@@ -1,6 +1,6 @@
 import torch
 from src.config import LoneWolfConfig
-from src.tokenizer import ByteTokenizer
+from src.tokenizer import BPETokenizer
 from src.model import LoneWolfLLM
 
 def generate_text(model, tokenizer, config, prompt_text, max_new_tokens=100):
@@ -32,7 +32,7 @@ def generate_text(model, tokenizer, config, prompt_text, max_new_tokens=100):
 
 def main():
     config = LoneWolfConfig()
-    tokenizer = ByteTokenizer()
+    tokenizer = BPETokenizer()
     
     # Reconstruct architecture shell and load saved states
     model = LoneWolfLLM(config).to(config.device)

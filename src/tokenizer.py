@@ -7,6 +7,7 @@ from tokenizers.pre_tokenizers import Whitespace
 class BPETokenizer:
     def __init__(self, vocab_size=4000, model_path="src/bpe_tokenizer.json"):
         self.vocab_size = vocab_size
+
         self.model_path = model_path
         
         # Define our foundational special tokens for context routing
@@ -14,11 +15,19 @@ class BPETokenizer:
         
         # If a trained tokenizer blueprint already exists on disk, load it instantly
         if os.path.exists(self.model_path):
+
             self.tokenizer = Tokenizer.from_file(self.model_path)
+
         else:
-            # Initialize an empty BPE core shell that splits text at empty whitespace characters
-            self.tokenizer = Tokenizer(BPE(unk_token="[UNK]"))
+            bpe_model = BPE()
+            self.tokenizer = Tokenizer(bpe_model)
             self.tokenizer.pre_tokenizer = Whitespace()
+            
+            # 2. THE CRITICAL FIX: Explicitly register special tokens to seed the vocabulary matrix layout
+            self.tokenizer.add_special_tokens(self.special_tokens)
+            
+            # 3. Securely bind the unknown fallback token parameters now that '[UNK]' safely exists in the map
+            self.tokenizer.model = BPE(unk_token="[UNK]")
 
     def train_from_file(self, file_path: str):
         """
@@ -41,8 +50,15 @@ class BPETokenizer:
         print(f"Tokenizer training complete! Mapping saved to '{self.model_path}'")
 
     def encode(self, text: str) -> list[int]:
-        # Converts a string sentence down into an optimized list of subword compression IDs
-        return self.tokenizer.encode(text, add_special_tokens=False).ids
+        try:
+            encoding = self.tokenizer.encode(text)
+            return encoding.ids
+        except Exception:
+            # Force training fallback if mapping arrays are completely missing
+            if os.path.exists("data/training_data.txt"):
+                self.train_from_file("data/training_data.txt")
+                return self.tokenizer.encode(text).ids
+            raise RuntimeError("Tokenizer is untrained and 'data/training_data.txt' was not found.")
 
     def decode(self, tokens: list[int]) -> str:
         # Converts a list of integers smoothly back into readable human words

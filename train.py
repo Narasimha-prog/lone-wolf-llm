@@ -4,7 +4,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 # Explicitly importing from our custom package paths
 from src.config import LoneWolfConfig
-from src.tokenizer import ByteTokenizer
+from src.tokenizer import BPETokenizer
 from src.dataset import TextDataset
 from src.model import LoneWolfLLM
 
@@ -15,7 +15,7 @@ def main():
     print(f"Loading Lone Wolf Engine on: {config.device}")
 
     # Initialize Tokenizer & Process Raw File Data
-    tokenizer = ByteTokenizer()
+    tokenizer = BPETokenizer(config.vocab_size)
     
 
     # taking data to train the model from file 'hello'
@@ -46,7 +46,7 @@ def main():
 
     model.train()
     
-    # Run a localized training loop of 500 steps
+    # Run a localized training loop of 2000 steps
     for step in tqdm(range(2000)):
         # Fetch a parallel batch of input vectors (X) and target vectors (Y)
         x_batch, y_batch = dataset.get_batch(batch_size=16, device=config.device)
